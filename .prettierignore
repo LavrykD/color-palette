@@ -1,0 +1,5 @@
+node_modules
+dist
+playwright-report
+allure-results
+playwright/.auth
