@@ -1,5 +1,4 @@
 import { defineConfig, devices } from '@playwright/test';
-import path from 'path';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
