@@ -11,6 +11,8 @@
     "report": "playwright show-report",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -31,13 +33,18 @@
   },
   "homepage": "https://github.com/LavrykD/playwright#readme",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.0",
     "dotenv": "^17.4.2",
+    "eslint": "^10.3.0",
+    "eslint-plugin-playwright": "^2.10.2",
+    "globals": "^17.6.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.1"
   }
 }
