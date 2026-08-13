@@ -47,15 +47,19 @@ upload.html                 — admin tool: add a new chevron entry
     "name": "Sunset Ridge",
     "image": "images/chevron-001.png",
     "colors": [
-      { "hex": "#E4572E", "code": "RAL 2001" },
-      { "hex": "#F3A712", "code": "RAL 1028" }
+      { "id": "chevron-001-color-1", "hex": "#E4572E", "code": "RAL 2001" },
+      { "id": "chevron-001-color-2", "hex": "#F3A712", "code": "RAL 1028" }
     ]
   }
 ]
 ```
 
-`id` is a slug generated from the name + timestamp to avoid collisions.
-`colors` length is unbounded — the UI renders however many are present.
+`id` (chevron-level) is a slug generated from the name + timestamp to avoid
+collisions. Each color also gets its own `id` — `<chevron-id>-color-<n>`,
+generated at upload time in the order the color rows were filled in — so an
+individual color within a chevron's palette can be referenced or linked to
+directly, independent of its hex/code. `colors` length is unbounded — the UI
+renders however many are present.
 
 ## Dashboard (index.html)
 
@@ -97,7 +101,9 @@ Treated as an admin tool, not a prominent nav item on the public dashboard.
      image file.
    - On success, `GET /repos/{owner}/{repo}/contents/data/chevrons.json` for
      current content + `sha`.
-   - Append the new entry, `PUT` the updated JSON back with that `sha`.
+   - Append the new entry — generating the chevron `id` and each color row's
+     `id` (`<chevron-id>-color-<n>`) at this point — then `PUT` the updated
+     JSON back with that `sha`.
    - On success, optimistically render the new card in the current page
      immediately, with a note that the live site will reflect it once GitHub
      Pages finishes its rebuild (~30–60s).
