@@ -127,19 +127,31 @@ Treated as an admin tool, not a prominent nav item on the public dashboard.
 
 ## Testing
 
-No test framework — this is a small static site. Verification is manual:
+Playwright, as a dev-only dependency (`package.json` + `@playwright/test`) —
+it never ships to the deployed static site, it only drives a local static
+server during test runs.
 
-- Serve locally (`python3 -m http.server` or equivalent) to check dashboard
-  layout, card resting/hover states, and responsiveness across a couple of
-  viewport widths.
-- Run a full end-to-end upload against a scratch/test repository first (not
-  this repo) to confirm the commit flow, error paths (bad token, sha
-  conflict), and optimistic rendering all behave before trusting it against
-  the real repo.
+- Serve the site locally (e.g. `python3 -m http.server` or Playwright's own
+  `webServer` config) and drive it with Playwright for:
+  - Dashboard rendering: cards show the right image, swatches, and codes for
+    a fixture `data/chevrons.json`.
+  - Hover state: assert the glass-hover styling (e.g. `backdrop-filter`/class
+    change) triggers on `hover`/focus.
+  - Responsiveness: run key assertions across a couple of viewport sizes.
+  - Upload form validation: dynamic add/remove color rows, required-field
+    errors, submit disabled until at least one color row is filled.
+- GitHub API commit calls (`github-api.js`) are mocked/intercepted in
+  Playwright (`page.route`) for these tests — no test run should perform a
+  real commit against any repository, scratch or otherwise.
+- Before trusting the upload flow against the real repo for the first time,
+  do one manual end-to-end run against a scratch/test repository to confirm
+  the real commit flow, error paths (bad token, sha conflict), and
+  optimistic rendering all behave.
 
 ## Out of scope
 
 - Editing or deleting existing chevron entries (upload/create only, for now).
 - Multi-user auth beyond "whoever holds a valid token for this repo."
-- Build tooling, linting, or CI (none of the previous project's tooling is
-  being restored).
+- Linting, CI, or any other tooling from the previous project (not being
+  restored). `package.json` is reintroduced only as a dev dependency holder
+  for Playwright — the deployed site itself remains build-free.
