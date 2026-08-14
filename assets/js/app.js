@@ -46,6 +46,10 @@ function createCard(chevron) {
     img.alt = `${chevron.name} (image unavailable)`;
   });
 
+  const name = document.createElement('span');
+  name.className = 'chevron-name';
+  name.textContent = chevron.name;
+
   const strip = document.createElement('div');
   strip.className = 'swatch-strip';
   chevron.colors.forEach((color, index) => strip.appendChild(createSwatch(color, index)));
@@ -54,7 +58,7 @@ function createCard(chevron) {
     card.style.setProperty('--card-glow-color', hexToRgba(chevron.colors[0].hex, 0.45));
   }
 
-  card.append(img, strip);
+  card.append(img, name, strip);
   return card;
 }
 
