@@ -4,7 +4,7 @@
   --color-border: rgba(0, 0, 0, 0.08);
   --color-text: #2b2f2c;
   --color-text-muted: #5c6259;
-  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 * {
