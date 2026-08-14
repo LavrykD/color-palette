@@ -1,0 +1,134 @@
+:root {
+  --color-bg: #eef0ec;
+  --color-surface: rgba(255, 255, 255, 0.6);
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-text: #2b2f2c;
+  --color-text-muted: #5c6259;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at top, #f4f5f1 0%, var(--color-bg) 55%, #e6e9e2 100%);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+h1 {
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.chevron-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.chevron-image {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  background: var(--color-border);
+}
+
+.swatch-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.swatch-color {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 3rem 1rem;
+}
+
+.chevron-image--broken {
+  object-fit: none;
+  background: var(--color-border)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23999'%3E%3Cpath d='M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/%3E%3C/svg%3E")
+    center/48px no-repeat;
+}
+
+.chevron-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.chevron-card {
+  margin-bottom: 0;
+}
+
+.chevron-card {
+  position: relative;
+  backdrop-filter: blur(0px);
+  transform: translateY(0) scale(1);
+  transition:
+    backdrop-filter 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.chevron-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 40%;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.chevron-card:hover,
+.chevron-card:focus-within {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.chevron-card:hover::before,
+.chevron-card:focus-within::before {
+  opacity: 1;
+}
+
+.chevron-card:hover .swatch-color,
+.chevron-card:focus-within .swatch-color {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
