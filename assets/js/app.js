@@ -3,10 +3,14 @@ async function fetchChevrons() {
   return response.json();
 }
 
-function createSwatch(color) {
+function createSwatch(color, index) {
   const swatch = document.createElement('div');
   swatch.className = 'swatch';
   swatch.dataset.id = color.id;
+
+  const number = document.createElement('span');
+  number.className = 'swatch-index';
+  number.textContent = `#${index + 1}`;
 
   const colorBox = document.createElement('span');
   colorBox.className = 'swatch-color';
@@ -16,7 +20,7 @@ function createSwatch(color) {
   code.className = 'swatch-code';
   code.textContent = color.code;
 
-  swatch.append(colorBox, code);
+  swatch.append(number, colorBox, code);
   return swatch;
 }
 
@@ -36,7 +40,7 @@ function createCard(chevron) {
 
   const strip = document.createElement('div');
   strip.className = 'swatch-strip';
-  chevron.colors.forEach((color) => strip.appendChild(createSwatch(color)));
+  chevron.colors.forEach((color, index) => strip.appendChild(createSwatch(color, index)));
 
   card.append(img, strip);
   return card;

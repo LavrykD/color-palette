@@ -42,23 +42,29 @@ h1 {
 .chevron-image {
   display: block;
   width: 100%;
-  height: 160px;
+  height: 192px;
   object-fit: cover;
   background: var(--color-border);
 }
 
 .swatch-strip {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.4rem;
   padding: 0.75rem;
 }
 
 .swatch {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.swatch-index {
+  min-width: 1.5em;
+  font-variant-numeric: tabular-nums;
   color: var(--color-text-muted);
 }
 
@@ -85,7 +91,7 @@ h1 {
 
 .chevron-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
   gap: 1.5rem;
 }
 
@@ -94,7 +100,6 @@ h1 {
 }
 
 .chevron-card {
-  position: relative;
   backdrop-filter: blur(0px);
   transform: translateY(0) scale(1);
   transition:
@@ -104,28 +109,14 @@ h1 {
     transform 0.25s ease;
 }
 
-.chevron-card::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 40%;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
 .chevron-card:hover,
 .chevron-card:focus-within {
   backdrop-filter: blur(12px);
   background: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  box-shadow:
+    0 0 0 2px rgba(43, 47, 44, 0.35),
+    0 12px 32px rgba(0, 0, 0, 0.16);
   transform: translateY(-4px) scale(1.02);
-}
-
-.chevron-card:hover::before,
-.chevron-card:focus-within::before {
-  opacity: 1;
 }
 
 .chevron-card:hover .swatch-color,

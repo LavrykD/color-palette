@@ -24,6 +24,9 @@ test.describe('dashboard rendering', () => {
     await expect(firstCard.locator('.swatch-code')).toHaveText(
       fixtureChevrons[0].colors.map((c) => c.code)
     );
+    await expect(firstCard.locator('.swatch-index')).toHaveText(
+      fixtureChevrons[0].colors.map((_, i) => `#${i + 1}`)
+    );
   });
 
   test('shows an empty-state message when data is malformed', async ({ page }) => {
