@@ -1,0 +1,29 @@
+[
+  {
+    "id": "chevron-001",
+    "name": "Sunset Ridge",
+    "image": "images/chevron-001.png",
+    "colors": [
+      { "id": "chevron-001-color-1", "hex": "#E4572E", "code": "RAL 2001" },
+      { "id": "chevron-001-color-2", "hex": "#F3A712", "code": "RAL 1028" }
+    ]
+  },
+  {
+    "id": "chevron-002",
+    "name": "Morning Fog",
+    "image": "images/chevron-002.png",
+    "colors": [
+      { "id": "chevron-002-color-1", "hex": "#8D99AE", "code": "RAL 7042" }
+    ]
+  },
+  {
+    "id": "chevron-003",
+    "name": "Deep Forest",
+    "image": "images/chevron-003.png",
+    "colors": [
+      { "id": "chevron-003-color-1", "hex": "#2B4739", "code": "RAL 6009" },
+      { "id": "chevron-003-color-2", "hex": "#5C8374", "code": "RAL 6021" },
+      { "id": "chevron-003-color-3", "hex": "#A9C5A0", "code": "RAL 6019" }
+    ]
+  }
+]
