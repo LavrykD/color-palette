@@ -70,4 +70,21 @@ test.describe('dashboard rendering', () => {
 
     expect(desktopColumns).toBeGreaterThan(mobileColumns);
   });
+
+  test('increases blur and lift on hover', async ({ page }) => {
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixtureChevrons) })
+    );
+    await page.goto('/');
+
+    const card = page.locator('.chevron-card').first();
+    const restingBlur = await card.evaluate((el) => getComputedStyle(el).backdropFilter);
+
+    await card.hover();
+    await page.waitForTimeout(10);
+    const hoverBlur = await card.evaluate((el) => getComputedStyle(el).backdropFilter);
+
+    expect(hoverBlur).not.toBe(restingBlur);
+    expect(hoverBlur).toContain('blur');
+  });
 });

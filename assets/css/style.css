@@ -92,3 +92,26 @@ h1 {
 .chevron-card {
   margin-bottom: 0;
 }
+
+.chevron-card {
+  backdrop-filter: blur(0px);
+  transform: translateY(0) scale(1);
+  transition:
+    backdrop-filter 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.chevron-card:hover,
+.chevron-card:focus-within {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.chevron-card:hover .swatch-color,
+.chevron-card:focus-within .swatch-color {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+}
