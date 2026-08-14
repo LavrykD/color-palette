@@ -81,7 +81,12 @@ test.describe('dashboard rendering', () => {
     const restingBlur = await card.evaluate((el) => getComputedStyle(el).backdropFilter);
 
     await card.hover();
-    await page.waitForTimeout(10);
+    // Wait for the :hover pseudo-class to propagate through the browser's style engine
+    // to the next animation frame, ensuring getComputedStyle reflects the hover state.
+    await page.waitForFunction(
+      () => window.getComputedStyle(document.querySelector('.chevron-card')).backdropFilter !== 'blur(0px)',
+      { timeout: 1000 }
+    );
     const hoverBlur = await card.evaluate((el) => getComputedStyle(el).backdropFilter);
 
     expect(hoverBlur).not.toBe(restingBlur);
