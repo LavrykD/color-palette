@@ -138,9 +138,10 @@ h1 {
   background: rgba(255, 255, 255, 0.4);
   /* Colored glow uses this card's own first swatch color (set inline via
      JS) so each card's hover state is visually distinct, not just a
-     generic highlight. */
+     generic highlight. A soft dimmed shadow (no hard-edged ring) sits
+     underneath it to lift the card off the page. */
   box-shadow:
-    0 0 0 2px rgba(43, 47, 44, 0.2),
+    0 10px 24px rgba(43, 47, 44, 0.22),
     0 20px 40px -12px var(--card-glow-color, rgba(0, 0, 0, 0.25));
   transform: translateY(-4px) scale(1.02);
 }
