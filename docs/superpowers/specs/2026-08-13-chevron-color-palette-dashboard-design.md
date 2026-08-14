@@ -1,39 +1,36 @@
 # Chevron Color Palette Dashboard — Design Spec
 
-Date: 2026-08-13
+Date: 2026-08-13 (revised 2026-08-14: dropped upload flow, static-only)
 
 ## Purpose
 
 A static dashboard, hosted on GitHub Pages only, that displays chevron images
 alongside the color palette used on each one (color swatch + paint/reference
-code). Visitors with a properly scoped GitHub token can upload new chevrons
-(image + a variable-length list of colors), which commits the new data
-directly to this repository.
+code). All data is static and file-based: new chevrons are added by directly
+editing the repository's data files (image + JSON entry) and committing —
+there is no in-app upload, no visitor-facing write path, and no database of
+any kind.
 
 ## Constraints
 
 - GitHub Pages only — no server, no build step, no backend of any kind.
-- Data must be visible to all visitors (not per-browser), so it lives in the
-  repo itself and is served as static JSON.
-- Uploads must go through a real git commit (via GitHub REST API), not
-  browser-local storage.
-- Token handling must be as safe as a purely static, client-side app can make
-  it: never leaked, never persisted anywhere but the visitor's own browser.
+- Data lives in the repo itself and is served as static JSON — no database.
+- Adding, editing, or removing chevrons happens by editing files in this repo
+  directly (by the maintainer, from code) and pushing a commit. The deployed
+  site has no write capability whatsoever — no token, no API calls, no
+  client-side persistence standing in for real data.
 
 ## Architecture
 
-Plain HTML/CSS/JS, no framework, no build step. Two pages, one shared data
-file, three small JS modules.
+Plain HTML/CSS/JS, no framework, no build step. One page, one shared data
+file, one small JS module.
 
 ```
 index.html                  — dashboard: grid of chevron+palette cards
-upload.html                 — admin tool: add a new chevron entry
 /assets/css/style.css       — glass styling, layout, typography
 /assets/js/app.js           — fetches data/chevrons.json, renders cards
-/assets/js/upload.js        — upload form logic (dynamic color rows, submit handler)
-/assets/js/github-api.js    — thin wrapper around the GitHub Contents API
 /data/chevrons.json         — [{ id, name, image, colors: [{ hex, code }] }]
-/images/<slug>.<ext>        — uploaded chevron images
+/images/<slug>.<ext>        — chevron images
 ```
 
 ### Data model
@@ -54,12 +51,22 @@ upload.html                 — admin tool: add a new chevron entry
 ]
 ```
 
-`id` (chevron-level) is a slug generated from the name + timestamp to avoid
-collisions. Each color also gets its own `id` — `<chevron-id>-color-<n>`,
-generated at upload time in the order the color rows were filled in — so an
-individual color within a chevron's palette can be referenced or linked to
-directly, independent of its hex/code. `colors` length is unbounded — the UI
-renders however many are present.
+`id` (chevron-level) is a slug, unique per chevron. Each color also gets its
+own `id` — `<chevron-id>-color-<n>` — so an individual color within a
+chevron's palette can be referenced or linked to directly, independent of its
+hex/code. `colors` length is unbounded — the UI renders however many are
+present.
+
+## Adding a chevron
+
+Done by hand, from code, by the maintainer only:
+
+1. Add the image file to `/images/<slug>.<ext>`.
+2. Add a new object to `data/chevrons.json`, following the existing ID
+   convention (`<chevron-id>-color-<n>` for each color row).
+3. Commit and push.
+
+No in-app form, no script, no tooling — this is a plain file edit.
 
 ## Dashboard (index.html)
 
@@ -80,50 +87,13 @@ renders however many are present.
   `backdrop-filter`, `background`, `box-shadow`, `transform` — no JS required
   for the effect itself.
 
-## Upload (upload.html)
-
-Treated as an admin tool, not a prominent nav item on the public dashboard.
-
-1. **Token gate**: on first use, prompt for a GitHub fine-grained personal
-   access token, scoped to only this repository with only the `Contents:
-   Read and write` permission. Store it in `localStorage` under a clearly
-   named key. Show a persistent "clear saved token" control. Display a short
-   note recommending the token be given an expiration (fine-grained PATs cap
-   at 1 year) and rotated periodically — a GitHub platform limit, not
-   something the app can change.
-2. **Form fields**: chevron name, image file picker, repeatable color rows
-   (native color input + text code input), add/remove-row buttons. At least
-   one color row required.
-3. **Submit flow** (`github-api.js`, using `api.github.com` over HTTPS only —
-   no third-party relay, token never sent anywhere else):
-   - Read the image file, base64-encode it.
-   - `PUT /repos/{owner}/{repo}/contents/images/{slug}.{ext}` to create the
-     image file.
-   - On success, `GET /repos/{owner}/{repo}/contents/data/chevrons.json` for
-     current content + `sha`.
-   - Append the new entry — generating the chevron `id` and each color row's
-     `id` (`<chevron-id>-color-<n>`) at this point — then `PUT` the updated
-     JSON back with that `sha`.
-   - On success, optimistically render the new card in the current page
-     immediately, with a note that the live site will reflect it once GitHub
-     Pages finishes its rebuild (~30–60s).
-4. **Token safety in code**: the token is read from `localStorage` at request
-   time, attached only to the `Authorization` header of requests to
-   `api.github.com`, and never written into any commit, log line, thrown
-   error message, or third-party call.
-
 ## Error handling
 
-- Missing/invalid token: validated (a lightweight authenticated `GET` to the
-  repo) before any write attempt; clear inline error, no partial writes.
-- Image `PUT` fails: stop before touching `chevrons.json` — never leave a
-  palette entry pointing at a missing image.
-- `chevrons.json` `PUT` conflicts (409, stale `sha` because something else
-  committed in between): re-fetch the file, re-apply the new entry, retry
-  once; if it fails again, surface a "please retry" message rather than
-  overwriting silently.
-- Network/API errors: shown inline near the form, original form values
-  preserved so the user doesn't lose input.
+- Missing or malformed `data/chevrons.json`: fail gracefully — show an empty
+  state rather than a broken page.
+- A chevron entry whose `image` path 404s: render the card with visible
+  alt text / placeholder rather than a broken image icon; don't let one bad
+  entry break the rest of the grid.
 
 ## Testing
 
@@ -138,20 +108,15 @@ server during test runs.
   - Hover state: assert the glass-hover styling (e.g. `backdrop-filter`/class
     change) triggers on `hover`/focus.
   - Responsiveness: run key assertions across a couple of viewport sizes.
-  - Upload form validation: dynamic add/remove color rows, required-field
-    errors, submit disabled until at least one color row is filled.
-- GitHub API commit calls (`github-api.js`) are mocked/intercepted in
-  Playwright (`page.route`) for these tests — no test run should perform a
-  real commit against any repository, scratch or otherwise.
-- Before trusting the upload flow against the real repo for the first time,
-  do one manual end-to-end run against a scratch/test repository to confirm
-  the real commit flow, error paths (bad token, sha conflict), and
-  optimistic rendering all behave.
+  - Missing-image / malformed-data handling per the Error handling section.
 
 ## Out of scope
 
-- Editing or deleting existing chevron entries (upload/create only, for now).
-- Multi-user auth beyond "whoever holds a valid token for this repo."
+- Any in-app write path: no upload form, no GitHub API calls, no token
+  handling. Adding/editing/removing chevrons is done by editing files
+  directly and committing, not through the app.
+- Multi-user auth of any kind — there are no visitor-facing write
+  permissions to gate.
 - Linting, CI, or any other tooling from the previous project (not being
   restored). `package.json` is reintroduced only as a dev dependency holder
   for Playwright — the deployed site itself remains build-free.
