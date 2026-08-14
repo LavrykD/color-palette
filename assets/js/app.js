@@ -3,6 +3,14 @@ async function fetchChevrons() {
   return response.json();
 }
 
+function hexToRgba(hex, alpha) {
+  const value = hex.replace('#', '');
+  const r = parseInt(value.substring(0, 2), 16);
+  const g = parseInt(value.substring(2, 4), 16);
+  const b = parseInt(value.substring(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 function createSwatch(color, index) {
   const swatch = document.createElement('div');
   swatch.className = 'swatch';
@@ -41,6 +49,10 @@ function createCard(chevron) {
   const strip = document.createElement('div');
   strip.className = 'swatch-strip';
   chevron.colors.forEach((color, index) => strip.appendChild(createSwatch(color, index)));
+
+  if (chevron.colors[0]) {
+    card.style.setProperty('--card-glow-color', hexToRgba(chevron.colors[0].hex, 0.45));
+  }
 
   card.append(img, strip);
   return card;

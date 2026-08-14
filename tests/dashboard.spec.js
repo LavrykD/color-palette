@@ -107,4 +107,18 @@ test.describe('dashboard rendering', () => {
     expect(hoverBlur).not.toBe(restingBlur);
     expect(hoverBlur).toContain('blur');
   });
+
+  test('sets a per-card glow color from the first swatch', async ({ page }) => {
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixtureChevrons) })
+    );
+    await page.goto('/');
+
+    const glowColor = await page
+      .locator('.chevron-card')
+      .first()
+      .evaluate((el) => el.style.getPropertyValue('--card-glow-color'));
+
+    expect(glowColor).toMatch(/^rgba\(\d+, \d+, \d+, 0\.45\)$/);
+  });
 });
