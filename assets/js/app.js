@@ -56,7 +56,14 @@ function renderChevrons(grid, chevrons) {
     renderEmptyState(grid, 'No chevrons yet.');
     return;
   }
-  chevrons.forEach((chevron) => grid.appendChild(createCard(chevron)));
+  chevrons.forEach((chevron) => {
+    try {
+      grid.appendChild(createCard(chevron));
+    } catch (err) {
+      // Skip a single malformed entry rather than letting it wipe the whole grid.
+      console.error('Skipping malformed chevron entry:', chevron, err);
+    }
+  });
 }
 
 async function init() {
