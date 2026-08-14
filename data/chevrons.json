@@ -1,0 +1,20 @@
+[
+  {
+    "id": "chevron-sunrise-ridge",
+    "name": "Sunrise Ridge",
+    "image": "images/chevron-sunrise-ridge.svg",
+    "colors": [
+      { "id": "chevron-sunrise-ridge-color-1", "hex": "#E4572E", "code": "RAL 2001" },
+      { "id": "chevron-sunrise-ridge-color-2", "hex": "#F3A712", "code": "RAL 1028" }
+    ]
+  },
+  {
+    "id": "chevron-harbor-mist",
+    "name": "Harbor Mist",
+    "image": "images/chevron-harbor-mist.svg",
+    "colors": [
+      { "id": "chevron-harbor-mist-color-1", "hex": "#8D99AE", "code": "RAL 7042" },
+      { "id": "chevron-harbor-mist-color-2", "hex": "#2B4739", "code": "RAL 6009" }
+    ]
+  }
+]
