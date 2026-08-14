@@ -52,6 +52,18 @@ test.describe('dashboard rendering', () => {
     await expect(page.locator('.chevron-image')).toHaveClass(/chevron-image--broken/);
   });
 
+  test('skips a single malformed entry and still renders the good ones', async ({ page }) => {
+    const malformed = { ...fixtureChevrons[0], colors: undefined };
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({
+        contentType: 'application/json',
+        body: JSON.stringify([malformed, fixtureChevrons[1], fixtureChevrons[2]]),
+      })
+    );
+    await page.goto('/');
+    await expect(page.locator('.chevron-card')).toHaveCount(2);
+  });
+
   test('lays out cards in more columns on wide viewports than narrow ones', async ({ page }) => {
     await page.route('**/data/chevrons.json', (route) =>
       route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixtureChevrons) })
