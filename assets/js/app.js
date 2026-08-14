@@ -29,6 +29,10 @@ function createCard(chevron) {
   img.className = 'chevron-image';
   img.src = chevron.image;
   img.alt = chevron.name;
+  img.addEventListener('error', () => {
+    img.classList.add('chevron-image--broken');
+    img.alt = `${chevron.name} (image unavailable)`;
+  });
 
   const strip = document.createElement('div');
   strip.className = 'swatch-strip';

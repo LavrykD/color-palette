@@ -42,4 +42,13 @@ test.describe('dashboard rendering', () => {
     await page.goto('/');
     await expect(page.locator('.empty-state')).toHaveText('No chevrons yet.');
   });
+
+  test('shows a placeholder when a chevron image fails to load', async ({ page }) => {
+    const broken = { ...fixtureChevrons[0], image: 'images/does-not-exist.png' };
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({ contentType: 'application/json', body: JSON.stringify([broken]) })
+    );
+    await page.goto('/');
+    await expect(page.locator('.chevron-image')).toHaveClass(/chevron-image--broken/);
+  });
 });
