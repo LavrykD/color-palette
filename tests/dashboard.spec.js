@@ -51,4 +51,23 @@ test.describe('dashboard rendering', () => {
     await page.goto('/');
     await expect(page.locator('.chevron-image')).toHaveClass(/chevron-image--broken/);
   });
+
+  test('lays out cards in more columns on wide viewports than narrow ones', async ({ page }) => {
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixtureChevrons) })
+    );
+
+    await page.setViewportSize({ width: 375, height: 800 });
+    await page.goto('/');
+    const mobileColumns = await page
+      .locator('.chevron-grid')
+      .evaluate((el) => getComputedStyle(el).gridTemplateColumns.trim().split(' ').length);
+
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const desktopColumns = await page
+      .locator('.chevron-grid')
+      .evaluate((el) => getComputedStyle(el).gridTemplateColumns.trim().split(' ').length);
+
+    expect(desktopColumns).toBeGreaterThan(mobileColumns);
+  });
 });
