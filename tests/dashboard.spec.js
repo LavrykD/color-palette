@@ -25,4 +25,21 @@ test.describe('dashboard rendering', () => {
       fixtureChevrons[0].colors.map((c) => c.code)
     );
   });
+
+  test('shows an empty-state message when data is malformed', async ({ page }) => {
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({ contentType: 'application/json', body: 'not valid json' })
+    );
+    await page.goto('/');
+    await expect(page.locator('.empty-state')).toHaveText('Unable to load chevron data.');
+    await expect(page.locator('.chevron-card')).toHaveCount(0);
+  });
+
+  test('shows an empty-state message when there are no chevrons', async ({ page }) => {
+    await page.route('**/data/chevrons.json', (route) =>
+      route.fulfill({ contentType: 'application/json', body: '[]' })
+    );
+    await page.goto('/');
+    await expect(page.locator('.empty-state')).toHaveText('No chevrons yet.');
+  });
 });

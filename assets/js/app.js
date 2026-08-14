@@ -38,15 +38,31 @@ function createCard(chevron) {
   return card;
 }
 
+function renderEmptyState(grid, message) {
+  grid.innerHTML = '';
+  const empty = document.createElement('p');
+  empty.className = 'empty-state';
+  empty.textContent = message;
+  grid.appendChild(empty);
+}
+
 function renderChevrons(grid, chevrons) {
   grid.innerHTML = '';
+  if (!Array.isArray(chevrons) || chevrons.length === 0) {
+    renderEmptyState(grid, 'No chevrons yet.');
+    return;
+  }
   chevrons.forEach((chevron) => grid.appendChild(createCard(chevron)));
 }
 
 async function init() {
   const grid = document.getElementById('chevron-grid');
-  const chevrons = await fetchChevrons();
-  renderChevrons(grid, chevrons);
+  try {
+    const chevrons = await fetchChevrons();
+    renderChevrons(grid, chevrons);
+  } catch (err) {
+    renderEmptyState(grid, 'Unable to load chevron data.');
+  }
 }
 
 init();
