@@ -14,7 +14,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--color-bg);
+  background: radial-gradient(ellipse at top, #f4f5f1 0%, var(--color-bg) 55%, #e6e9e2 100%);
   color: var(--color-text);
   font-family: var(--font-sans);
 }
@@ -94,6 +94,7 @@ h1 {
 }
 
 .chevron-card {
+  position: relative;
   backdrop-filter: blur(0px);
   transform: translateY(0) scale(1);
   transition:
@@ -103,12 +104,28 @@ h1 {
     transform 0.25s ease;
 }
 
+.chevron-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 40%;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
 .chevron-card:hover,
 .chevron-card:focus-within {
   backdrop-filter: blur(12px);
   background: rgba(255, 255, 255, 0.4);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
   transform: translateY(-4px) scale(1.02);
+}
+
+.chevron-card:hover::before,
+.chevron-card:focus-within::before {
+  opacity: 1;
 }
 
 .chevron-card:hover .swatch-color,
