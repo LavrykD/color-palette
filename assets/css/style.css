@@ -12,9 +12,9 @@
 }
 
 html {
-  /* Fluid base size: 16px floor on narrow phones (e.g. iPhone widths),
-     scaling up to a 20px ceiling from ~800px viewport width up. */
-  font-size: clamp(1rem, 0.75rem + 1vw, 1.25rem);
+  /* Fluid base size: ~17px floor on narrow phones (e.g. iPhone widths),
+     scaling up to a ~22px ceiling from ~800px viewport width up. */
+  font-size: clamp(1.0625rem, 0.8rem + 1vw, 1.375rem);
   min-height: 100%;
   /* Same background as body: covers iOS Safari's overscroll/rubber-band
      area so no white stripe shows above/below the page on phones. */
@@ -82,13 +82,14 @@ h1 {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-bg);
 }
 
 .swatch-index {
   min-width: 1.5em;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-bg);
 }
 
 .swatch-color {
@@ -114,6 +115,8 @@ h1 {
 
 .chevron-grid {
   display: grid;
+  /* main's max-width: 1200px caps this at exactly 3 columns on desktop;
+     narrower viewports fall back to fewer columns automatically. */
   grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
   gap: 1.5rem;
 }
@@ -144,9 +147,4 @@ h1 {
     0 10px 24px rgba(43, 47, 44, 0.22),
     0 20px 40px -12px var(--card-glow-color, rgba(0, 0, 0, 0.25));
   transform: translateY(-4px) scale(1.02);
-}
-
-.chevron-card:hover .swatch-color,
-.chevron-card:focus-within .swatch-color {
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
 }

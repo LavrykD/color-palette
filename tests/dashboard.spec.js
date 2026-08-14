@@ -67,7 +67,7 @@ test.describe('dashboard rendering', () => {
     await expect(page.locator('.chevron-card')).toHaveCount(2);
   });
 
-  test('lays out cards in more columns on wide viewports than narrow ones', async ({ page }) => {
+  test('lays out three columns on desktop and fewer on narrow viewports', async ({ page }) => {
     await page.route('**/data/chevrons.json', (route) =>
       route.fulfill({ contentType: 'application/json', body: JSON.stringify(fixtureChevrons) })
     );
@@ -83,7 +83,8 @@ test.describe('dashboard rendering', () => {
       .locator('.chevron-grid')
       .evaluate((el) => getComputedStyle(el).gridTemplateColumns.trim().split(' ').length);
 
-    expect(desktopColumns).toBeGreaterThan(mobileColumns);
+    expect(desktopColumns).toBe(3);
+    expect(mobileColumns).toBeLessThan(desktopColumns);
   });
 
   test('increases blur and lift on hover', async ({ page }) => {
